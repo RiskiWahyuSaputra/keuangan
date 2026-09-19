@@ -107,7 +107,7 @@ export default function Modal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center overflow-y-auto p-0 sm:items-center sm:p-4 transition-all duration-300 ease-out ${
+      className={`fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 transition-all duration-300 ease-out ${
         visible
           ? "bg-slate-900/40 dark:bg-black/60 backdrop-blur-md opacity-100"
           : "bg-transparent backdrop-blur-none opacity-0 pointer-events-none"
@@ -122,18 +122,18 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        className={`max-h-[92vh] w-full overflow-y-auto rounded-t-[2rem] sm:rounded-3xl ios-glass-modal shadow-2xl ${SIZE_CLASSES[size]} transform transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`max-h-[85vh] sm:max-h-[90vh] w-full flex flex-col rounded-t-[2rem] sm:rounded-3xl ios-glass-modal shadow-2xl ${SIZE_CLASSES[size]} transform transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           visible
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-full sm:translate-y-6 sm:scale-95 opacity-0"
         }`}
       >
         {/* iOS Handlebar Indicator untuk tampilan mobile */}
-        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="flex justify-center pt-3 pb-1 shrink-0 sm:hidden">
           <div className="h-1.5 w-10 rounded-full bg-slate-300 dark:bg-slate-600/70" />
         </div>
 
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/60 px-6 py-4 backdrop-blur-md">
+        <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/60 px-6 py-4 backdrop-blur-md">
           <div>
             <h2 id={titleId} className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
               {title}
@@ -153,7 +153,7 @@ export default function Modal({
             <X aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto overscroll-contain flex-1 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] sm:pb-6">{children}</div>
       </div>
     </div>
   );
