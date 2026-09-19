@@ -50,7 +50,7 @@ export function useTransactions(): UseTransactionsResult {
   const addTransaction = useCallback(
     (input: TransactionInput) => {
       addTransactionToStore(input);
-      toast("Transaksi berhasil ditambahkan.");
+      toast("Transaksi baru berhasil disimpan", "success");
     },
     [toast],
   );
@@ -58,7 +58,7 @@ export function useTransactions(): UseTransactionsResult {
   const updateTransaction = useCallback(
     (id: string, input: TransactionInput) => {
       updateTransactionInStore(id, input);
-      toast("Transaksi berhasil diperbarui.");
+      toast("Perubahan transaksi disimpan", "success");
     },
     [toast],
   );
@@ -66,7 +66,7 @@ export function useTransactions(): UseTransactionsResult {
   const deleteTransaction = useCallback(
     (id: string) => {
       deleteTransactionFromStore(id);
-      toast("Transaksi berhasil dihapus.");
+      toast("Transaksi berhasil dihapus", "delete");
     },
     [toast],
   );

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   ChartPie,
   LayoutDashboard,
@@ -33,10 +34,31 @@ function isActivePath(pathname: string, href: string): boolean {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-30 ios-glass-nav border-b border-white/60 dark:border-white/10">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <header
+      className={`sticky top-0 z-30 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        scrolled
+          ? "border-b border-white/60 dark:border-white/10 ios-glass-nav py-0 shadow-sm"
+          : "border-b border-transparent bg-transparent py-1.5"
+      }`}
+    >
+      <div
+        className={`mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] sm:px-6 ${
+          scrolled
+            ? "py-2.5 sm:py-3 -translate-y-1 sm:translate-y-0"
+            : "py-3 sm:py-3.5 translate-y-0"
+        }`}
+      >
         <Link
           href="/"
           className="flex items-center gap-2.5 rounded-2xl p-1 transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"

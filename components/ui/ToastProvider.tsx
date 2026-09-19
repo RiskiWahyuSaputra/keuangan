@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CheckCircle2, Info, X } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, Sparkles, Trash2, X } from "lucide-react";
 import {
   createContext,
   useCallback,
@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-export type ToastVariant = "success" | "error" | "info";
+export type ToastVariant = "success" | "error" | "info" | "delete";
 
 interface ToastItem {
   id: string;
@@ -25,20 +25,8 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-const TOAST_DURATION_MS = 3500;
+const TOAST_DURATION_MS = 3200;
 const MAX_VISIBLE_TOASTS = 3;
-
-const VARIANT_STYLES: Record<ToastVariant, string> = {
-  success: "border-emerald-200 bg-white text-slate-800",
-  error: "border-red-200 bg-white text-slate-800",
-  info: "border-slate-200 bg-white text-slate-800",
-};
-
-const ICON_STYLES: Record<ToastVariant, string> = {
-  success: "text-emerald-600",
-  error: "text-red-600",
-  info: "text-blue-600",
-};
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -72,10 +60,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
+      {/* Toast Alert Melayang di Bagian Atas (Dynamic Island Capsule Style) */}
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[60] flex flex-col items-center gap-2 p-4 sm:items-end"
+        className="pointer-events-none fixed inset-x-0 top-3 z-[80] flex flex-col items-center gap-2.5 px-4 pt-[env(safe-area-inset-top,0px)]"
       >
         {toasts.map((item) => (
           <ToastCard key={item.id} item={item} onDismiss={dismiss} />
@@ -86,23 +75,63 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 }
 
 function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: string) => void }) {
-  const Icon =
-    item.variant === "success" ? CheckCircle2 : item.variant === "error" ? AlertTriangle : Info;
+  const isDelete = item.variant === "delete" || item.message.toLowerCase().includes("hapus");
+  const isSuccess = item.variant === "success" && !isDelete;
+  const isError = item.variant === "error";
 
   return (
     <div
       role="status"
-      className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border px-4 py-3 shadow-lg shadow-slate-900/5 ${VARIANT_STYLES[item.variant]}`}
+      className="pointer-events-auto group relative flex items-center gap-3 rounded-full px-4 py-2.5 shadow-2xl backdrop-blur-2xl transition-all active:scale-95 animate-island-toast border border-white/40 dark:border-white/15 bg-white/85 dark:bg-slate-900/90 max-w-sm sm:max-w-md w-auto"
+      style={{
+        boxShadow: isSuccess
+          ? "0 12px 36px -4px rgba(16, 185, 129, 0.25), 0 0 0 1px rgba(16, 185, 129, 0.15) inset"
+          : isDelete
+          ? "0 12px 36px -4px rgba(239, 68, 68, 0.25), 0 0 0 1px rgba(239, 68, 68, 0.15) inset"
+          : isError
+          ? "0 12px 36px -4px rgba(244, 63, 94, 0.25), 0 0 0 1px rgba(244, 63, 94, 0.15) inset"
+          : "0 12px 36px -4px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.15) inset",
+      }}
     >
-      <Icon aria-hidden="true" className={`mt-0.5 h-5 w-5 shrink-0 ${ICON_STYLES[item.variant]}`} />
-      <p className="flex-1 text-sm leading-5">{item.message}</p>
+      {/* Icon Capsule Pill */}
+      <div
+        className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-white shadow-sm ${
+          isSuccess
+            ? "bg-gradient-to-tr from-emerald-600 to-teal-400"
+            : isDelete
+            ? "bg-gradient-to-tr from-red-600 to-rose-400"
+            : isError
+            ? "bg-gradient-to-tr from-rose-600 to-pink-500"
+            : "bg-gradient-to-tr from-blue-600 to-indigo-400"
+        }`}
+      >
+        {isSuccess ? (
+          <Sparkles aria-hidden="true" className="h-4 w-4 stroke-[2.5]" />
+        ) : isDelete ? (
+          <Trash2 aria-hidden="true" className="h-3.5 w-3.5 stroke-[2.5]" />
+        ) : isError ? (
+          <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 stroke-[2.5]" />
+        ) : (
+          <Info aria-hidden="true" className="h-3.5 w-3.5 stroke-[2.5]" />
+        )}
+      </div>
+
+      <div className="flex flex-col min-w-0 pr-1">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          {isSuccess ? "Berhasil" : isDelete ? "Dihapus" : isError ? "Perhatian" : "Info"}
+        </span>
+        <p className="text-xs sm:text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100 truncate">
+          {item.message}
+        </p>
+      </div>
+
       <button
         type="button"
         onClick={() => onDismiss(item.id)}
         aria-label="Tutup notifikasi"
-        className="-m-1 rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
+        className="-mr-1 ml-1 grid h-6 w-6 place-items-center rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
       >
-        <X aria-hidden="true" className="h-4 w-4" />
+        <X aria-hidden="true" className="h-3.5 w-3.5" />
       </button>
     </div>
   );

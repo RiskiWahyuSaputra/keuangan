@@ -57,6 +57,19 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (!sessionStorage.getItem("dompetq_splash_seen")) {
+                  document.documentElement.classList.add("dompetq-splash-active");
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col font-sans text-slate-900 dark:text-slate-100 selection:bg-blue-500/20 selection:text-blue-900 dark:selection:text-blue-200 pb-20 md:pb-0">
         <ThemeProvider>
           <ToastProvider>
