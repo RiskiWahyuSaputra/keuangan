@@ -26,12 +26,22 @@ export const metadata: Metadata = {
     "Catat pemasukan dan pengeluaran pribadi dengan mudah. Data tersimpan di browser tanpa server maupun database.",
   icons: {
     icon: "/favicon-64.png",
-    apple: "/apple-touch-icon.png",
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "DompetQ",
+  },
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+    "mobile-web-app-capable": "yes",
   },
 };
 

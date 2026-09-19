@@ -6,7 +6,10 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "DompetQ",
     description: "Catat pemasukan dan pengeluaran harian dengan mudah.",
     start_url: "/",
+    scope: "/",
     display: "standalone",
+    display_override: ["standalone", "window-controls-overlay"],
+    orientation: "portrait",
     background_color: "#ffffff",
     theme_color: "#0f172a",
     icons: [
