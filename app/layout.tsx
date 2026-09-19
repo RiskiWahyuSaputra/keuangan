@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   },
   description:
     "Catat pemasukan dan pengeluaran pribadi dengan mudah. Data tersimpan di browser tanpa server maupun database.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "DompetQ",
+  },
 };
 
 export default function RootLayout({
