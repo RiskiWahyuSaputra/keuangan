@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import TypeBadge from "@/components/ui/TypeBadge";
 import { formatDateID } from "@/lib/date";
 import { formatNumberID } from "@/lib/formatCurrency";
+import { getCategoryMeta } from "@/lib/categoryIcons";
 import type { Transaction } from "@/types/transaction";
 
 interface TransactionTableProps {
@@ -48,20 +49,30 @@ export default function TransactionTable({
           {transactions.map((transaction) => {
             const isIncome = transaction.type === "income";
             const label = `${transaction.description || transaction.category} sebesar Rp ${formatNumberID(transaction.amount)}`;
+            const meta = getCategoryMeta(transaction.category);
+            const Icon = meta.icon;
+
             return (
               <tr key={transaction.id} className="transition-colors hover:bg-white/50 dark:hover:bg-white/5">
                 <td className="whitespace-nowrap px-5 py-3.5 text-slate-500 dark:text-slate-400 text-xs sm:text-sm">
                   {formatDateID(transaction.date)}
                 </td>
                 <td className="max-w-[16rem] px-5 py-3.5">
-                  <span className="block truncate font-medium text-slate-900 dark:text-slate-100">
-                    {transaction.description || transaction.category}
-                  </span>
-                  {transaction.description ? (
-                    <span className="mt-0.5 block truncate text-xs text-slate-400 dark:text-slate-400">
-                      {transaction.category}
-                    </span>
-                  ) : null}
+                  <div className="flex items-center gap-3">
+                    <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl border ${meta.bg} shadow-2xs`}>
+                      <Icon className={`h-4 w-4 ${meta.color}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="block truncate font-medium text-slate-900 dark:text-slate-100">
+                        {transaction.description || transaction.category}
+                      </span>
+                      {transaction.description ? (
+                        <span className="mt-0.5 block truncate text-xs text-slate-400 dark:text-slate-400">
+                          {transaction.category}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
                 </td>
                 <td className="px-5 py-3.5">
                   <span className="inline-flex items-center rounded-xl bg-white/60 dark:bg-slate-800/80 border border-white/80 dark:border-white/10 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-2xs">
