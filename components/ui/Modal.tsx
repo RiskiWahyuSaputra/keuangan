@@ -107,7 +107,7 @@ export default function Modal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4 transition-all duration-300 ease-out ${
+      className={`fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4 transition-all duration-300 ease-out ${
         visible
           ? "bg-slate-900/40 dark:bg-black/60 backdrop-blur-md opacity-100"
           : "bg-transparent backdrop-blur-none opacity-0 pointer-events-none"
