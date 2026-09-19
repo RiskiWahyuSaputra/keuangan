@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import TypeBadge from "@/components/ui/TypeBadge";
 import { formatDateID } from "@/lib/date";
 import { formatNumberID } from "@/lib/formatCurrency";
+import { getCategoryMeta } from "@/lib/categoryIcons";
 import type { Transaction } from "@/types/transaction";
 
 interface TransactionCardListProps {
@@ -23,15 +24,29 @@ export default function TransactionCardList({
       {transactions.map((transaction) => {
         const isIncome = transaction.type === "income";
         const label = `${transaction.description || transaction.category} sebesar Rp ${formatNumberID(transaction.amount)}`;
+        const meta = getCategoryMeta(transaction.category);
+        const Icon = meta.icon;
+
         return (
           <li
             key={transaction.id}
             className="rounded-3xl ios-glass-card p-4 sm:p-5 transition-all"
           >
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <p className="text-xs text-slate-500 dark:text-slate-400">{formatDateID(transaction.date)}</p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl border ${meta.bg} shadow-xs`}>
+                  <Icon className={`h-5 w-5 ${meta.color}`} />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    {transaction.description || transaction.category}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{formatDateID(transaction.date)}</p>
+                </div>
+              </div>
+
               <p
-                className={`text-sm font-semibold tabular-nums ${
+                className={`text-sm sm:text-base font-bold tabular-nums shrink-0 ${
                   isIncome ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                 }`}
               >
@@ -39,12 +54,8 @@ export default function TransactionCardList({
               </p>
             </div>
 
-            <p className="mt-2 break-words text-sm font-medium text-slate-900 dark:text-slate-100">
-              {transaction.description || transaction.category}
-            </p>
-
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-xl bg-white/60 dark:bg-slate-800/80 border border-white/80 dark:border-white/10 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center rounded-xl bg-white/60 dark:bg-slate-800/80 border border-white/80 dark:border-white/10 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300">
                 {transaction.category}
               </span>
               <TypeBadge type={transaction.type} />

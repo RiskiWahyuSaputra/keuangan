@@ -9,6 +9,7 @@ import TypeBadge from "@/components/ui/TypeBadge";
 import { buttonStyles } from "@/components/ui/Button";
 import { formatDateID } from "@/lib/date";
 import { formatNumberID } from "@/lib/formatCurrency";
+import { getCategoryMeta } from "@/lib/categoryIcons";
 import type { Transaction } from "@/types/transaction";
 
 interface RecentTransactionsProps {
@@ -60,13 +61,21 @@ export default function RecentTransactions({
           {transactions.map((transaction) => {
             const isIncome = transaction.type === "income";
             const label = `${transaction.description || transaction.category} sebesar Rp ${formatNumberID(transaction.amount)}`;
+            const meta = getCategoryMeta(transaction.category);
+            const Icon = meta.icon;
+
             return (
               <li
                 key={transaction.id}
                 className="group flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5 transition-colors hover:bg-white/40 dark:hover:bg-white/5"
               >
+                {/* Visual Category Pill Icon ala Apple Wallet */}
+                <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl border ${meta.bg} shadow-xs`}>
+                  <Icon className={`h-5 w-5 ${meta.color}`} />
+                </div>
+
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+                  <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
                     {transaction.description || transaction.category}
                   </p>
                   <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
@@ -74,7 +83,7 @@ export default function RecentTransactions({
                     <span aria-hidden="true" className="text-slate-300 dark:text-slate-600">
                       ·
                     </span>
-                    <span>{transaction.category}</span>
+                    <span className="font-medium text-slate-600 dark:text-slate-300">{transaction.category}</span>
                   </div>
                 </div>
 
