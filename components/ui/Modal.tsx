@@ -86,7 +86,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-slate-900/40 dark:bg-black/60 p-0 backdrop-blur-md transition-all sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-slate-900/40 dark:bg-black/60 p-0 animate-ios-backdrop sm:items-center sm:p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -97,8 +97,13 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        className={`max-h-[92vh] w-full overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-glass-modal ${SIZE_CLASSES[size]}`}
+        className={`max-h-[92vh] w-full overflow-y-auto rounded-t-[2rem] sm:rounded-3xl ios-glass-modal animate-ios-modal shadow-2xl ${SIZE_CLASSES[size]}`}
       >
+        {/* iOS Handlebar Indicator untuk tampilan mobile */}
+        <div className="flex justify-center pt-2.5 pb-0.5 sm:hidden">
+          <div className="h-1.5 w-10 rounded-full bg-slate-300 dark:bg-slate-600/70" />
+        </div>
+
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/60 px-6 py-4 backdrop-blur-md">
           <div>
             <h2 id={titleId} className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
