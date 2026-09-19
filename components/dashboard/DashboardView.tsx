@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 import MonthlySummary from "@/components/dashboard/MonthlySummary";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
+import SavingsGoals from "@/components/dashboard/SavingsGoals";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import PageHeader from "@/components/layout/PageHeader";
 import TopExpenseCategories from "@/components/statistics/TopExpenseCategories";
@@ -137,7 +138,9 @@ export default function DashboardView() {
           <SummaryCards balance={balance} income={totalIncome} expense={totalExpense} />
 
           <div className="grid gap-5 lg:grid-cols-3">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-5">
+              <SavingsGoals />
+
               <RecentTransactions
                 transactions={recentTransactions}
                 totalCount={transactions.length}
