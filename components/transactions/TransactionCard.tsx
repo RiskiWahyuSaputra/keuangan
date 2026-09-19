@@ -29,33 +29,33 @@ export default function TransactionCardList({
             className="rounded-3xl ios-glass-card p-4 sm:p-5 transition-all"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <p className="text-xs text-slate-500">{formatDateID(transaction.date)}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{formatDateID(transaction.date)}</p>
               <p
                 className={`text-sm font-semibold tabular-nums ${
-                  isIncome ? "text-emerald-600" : "text-rose-600"
+                  isIncome ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                 }`}
               >
                 {isIncome ? "+" : "-"} Rp {formatNumberID(transaction.amount)}
               </p>
             </div>
 
-            <p className="mt-2 break-words text-sm font-medium text-slate-900">
+            <p className="mt-2 break-words text-sm font-medium text-slate-900 dark:text-slate-100">
               {transaction.description || transaction.category}
             </p>
 
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-xl bg-white/60 border border-white/80 px-2 py-1 text-xs font-medium text-slate-700">
+              <span className="inline-flex items-center rounded-xl bg-white/60 dark:bg-slate-800/80 border border-white/80 dark:border-white/10 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300">
                 {transaction.category}
               </span>
               <TypeBadge type={transaction.type} />
             </div>
 
-            <div className="mt-3.5 flex gap-2 border-t border-white/50 pt-3">
+            <div className="mt-3.5 flex gap-2 border-t border-white/50 dark:border-white/10 pt-3">
               <button
                 type="button"
                 onClick={() => onEdit(transaction)}
                 aria-label={`Edit transaksi ${label}`}
-                className="ios-button-secondary flex flex-1 items-center justify-center gap-2 rounded-2xl py-2 text-xs sm:text-sm font-medium text-slate-700"
+                className="ios-button-secondary flex flex-1 items-center justify-center gap-2 rounded-2xl py-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"
               >
                 <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 Edit
@@ -64,7 +64,7 @@ export default function TransactionCardList({
                 type="button"
                 onClick={() => onDelete(transaction)}
                 aria-label={`Hapus transaksi ${label}`}
-                className="ios-button-secondary flex flex-1 items-center justify-center gap-2 rounded-2xl py-2 text-xs sm:text-sm font-medium text-rose-600 hover:text-rose-700"
+                className="ios-button-secondary flex flex-1 items-center justify-center gap-2 rounded-2xl py-2 text-xs sm:text-sm font-medium text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300"
               >
                 <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                 Hapus

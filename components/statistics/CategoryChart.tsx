@@ -1,5 +1,3 @@
-"use client";
-
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import { getChartColor } from "@/lib/categories";
@@ -27,12 +25,12 @@ function CategoryTooltip({ active, payload }: ChartTooltipProps) {
   if (!item) return null;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 shadow-lg shadow-slate-900/5">
-      <p className="text-xs font-medium text-slate-500">{item.category}</p>
-      <p className="mt-0.5 text-sm font-semibold tabular-nums text-slate-900">
+    <div className="rounded-2xl ios-glass-modal px-4 py-3 shadow-lg">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{item.category}</p>
+      <p className="mt-0.5 text-sm font-bold tabular-nums text-slate-900 dark:text-slate-100">
         {formatCurrency(item.total)}
       </p>
-      <p className="text-xs text-slate-400">{item.count} transaksi</p>
+      <p className="text-xs text-slate-400 dark:text-slate-500">{item.count} transaksi</p>
     </div>
   );
 }
@@ -40,7 +38,7 @@ function CategoryTooltip({ active, payload }: ChartTooltipProps) {
 export default function CategoryChart({ data, total }: CategoryChartProps) {
   if (data.length === 0) {
     return (
-      <p className="px-5 py-12 text-center text-sm text-slate-500">
+      <p className="px-5 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
         Belum ada pengeluaran pada periode ini.
       </p>
     );
@@ -52,7 +50,7 @@ export default function CategoryChart({ data, total }: CategoryChartProps) {
   }));
 
   return (
-    <div className="grid gap-4 p-5 lg:grid-cols-2 lg:items-center">
+    <div className="grid gap-4 p-6 lg:grid-cols-2 lg:items-center">
       <div className="relative">
         <ResponsiveContainer width="100%" height={240}>
           <PieChart>
@@ -73,8 +71,8 @@ export default function CategoryChart({ data, total }: CategoryChartProps) {
           </PieChart>
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xs text-slate-500">Total</span>
-          <span className="max-w-[7.5rem] truncate text-sm font-semibold tabular-nums text-slate-900">
+          <span className="text-xs text-slate-500 dark:text-slate-400">Total</span>
+          <span className="max-w-[7.5rem] truncate text-sm font-bold tabular-nums text-slate-900 dark:text-slate-100">
             {formatCurrency(total)}
           </span>
         </div>
@@ -90,11 +88,11 @@ export default function CategoryChart({ data, total }: CategoryChartProps) {
                 className="h-2.5 w-2.5 shrink-0 rounded-full"
                 style={{ backgroundColor: item.fill }}
               />
-              <span className="min-w-0 flex-1 truncate text-slate-700">{item.category}</span>
-              <span className="shrink-0 font-medium tabular-nums text-slate-900">
+              <span className="min-w-0 flex-1 truncate text-slate-700 dark:text-slate-300">{item.category}</span>
+              <span className="shrink-0 font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                 {formatCurrency(item.total)}
               </span>
-              <span className="w-12 shrink-0 text-right text-xs tabular-nums text-slate-500">
+              <span className="w-12 shrink-0 text-right text-xs tabular-nums text-slate-500 dark:text-slate-400">
                 {formatPercentage(percentage)}
               </span>
             </li>

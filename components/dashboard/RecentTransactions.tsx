@@ -56,22 +56,22 @@ export default function RecentTransactions({
           }
         />
       ) : (
-        <ul className="divide-y divide-white/40">
+        <ul className="divide-y divide-white/40 dark:divide-white/10">
           {transactions.map((transaction) => {
             const isIncome = transaction.type === "income";
             const label = `${transaction.description || transaction.category} sebesar Rp ${formatNumberID(transaction.amount)}`;
             return (
               <li
                 key={transaction.id}
-                className="group flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5 transition-colors hover:bg-white/40"
+                className="group flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-3.5 transition-colors hover:bg-white/40 dark:hover:bg-white/5"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">
+                  <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
                     {transaction.description || transaction.category}
                   </p>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                  <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                     <span>{formatDateID(transaction.date)}</span>
-                    <span aria-hidden="true" className="text-slate-300">
+                    <span aria-hidden="true" className="text-slate-300 dark:text-slate-600">
                       ·
                     </span>
                     <span>{transaction.category}</span>
@@ -82,7 +82,7 @@ export default function RecentTransactions({
                   <TypeBadge type={transaction.type} />
                   <span
                     className={`text-sm font-semibold tabular-nums ${
-                      isIncome ? "text-emerald-600" : "text-rose-600"
+                      isIncome ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                     }`}
                   >
                     {isIncome ? "+" : "-"} Rp {formatNumberID(transaction.amount)}
@@ -93,7 +93,7 @@ export default function RecentTransactions({
                       onClick={() => onEdit(transaction)}
                       aria-label={`Edit transaksi ${label}`}
                       title="Edit"
-                      className="grid h-8 w-8 place-items-center rounded-xl text-slate-500 transition-all hover:bg-white/80 hover:text-blue-600 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                      className="grid h-8 w-8 place-items-center rounded-xl text-slate-500 dark:text-slate-400 transition-all hover:bg-white/80 dark:hover:bg-white/10 hover:text-blue-600 dark:hover:text-blue-400 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                     >
                       <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                     </button>
@@ -102,7 +102,7 @@ export default function RecentTransactions({
                       onClick={() => onDelete(transaction)}
                       aria-label={`Hapus transaksi ${label}`}
                       title="Hapus"
-                      className="grid h-8 w-8 place-items-center rounded-xl text-slate-500 transition-all hover:bg-white/80 hover:text-rose-600 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                      className="grid h-8 w-8 place-items-center rounded-xl text-slate-500 dark:text-slate-400 transition-all hover:bg-white/80 dark:hover:bg-white/10 hover:text-rose-600 dark:hover:text-rose-400 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                     >
                       <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                     </button>

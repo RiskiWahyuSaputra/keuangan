@@ -73,11 +73,11 @@ export default function StatisticsView() {
                 id="statistics-scope"
                 value={activeScope}
                 onChange={(event) => setScope(event.target.value)}
-                className="w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-xs sm:text-sm font-medium text-slate-800 focus-visible:outline-none transition-all cursor-pointer"
+                className="w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus-visible:outline-none transition-all cursor-pointer"
               >
-                <option value={ALL_MONTHS}>Semua Waktu</option>
+                <option value={ALL_MONTHS} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">Semua Waktu</option>
                 {months.map((monthKey) => (
-                  <option key={monthKey} value={monthKey}>
+                  <option key={monthKey} value={monthKey} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                     {formatMonthLabel(monthKey)}
                   </option>
                 ))}
@@ -111,28 +111,28 @@ export default function StatisticsView() {
           {/* iOS-styled Highlights */}
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-3xl ios-glass-card p-5 sm:p-6">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Pemasukan ({scopeLabel})
               </span>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-emerald-600">
+              <p className="mt-2 text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
                 {formatCurrency(income)}
               </p>
             </div>
             <div className="rounded-3xl ios-glass-card p-5 sm:p-6">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Pengeluaran ({scopeLabel})
               </span>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-rose-600">
+              <p className="mt-2 text-2xl font-bold tabular-nums text-rose-600 dark:text-rose-400">
                 {formatCurrency(expense)}
               </p>
             </div>
             <div className="rounded-3xl ios-glass-card p-5 sm:p-6">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Selisih ({scopeLabel})
               </span>
               <p
                 className={`mt-2 text-2xl font-bold tabular-nums ${
-                  balance < 0 ? "text-rose-600" : "text-slate-900"
+                  balance < 0 ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-slate-100"
                 }`}
               >
                 {formatCurrency(balance)}
@@ -176,7 +176,7 @@ export default function StatisticsView() {
                 <table className="w-full border-collapse text-left text-sm">
                   <caption className="sr-only">Rekap bulanan keuangan</caption>
                   <thead>
-                    <tr className="border-b border-white/60 bg-white/40 text-xs font-semibold uppercase tracking-wider text-slate-500 backdrop-blur-sm">
+                    <tr className="border-b border-white/60 dark:border-white/10 bg-white/40 dark:bg-white/5 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 backdrop-blur-sm">
                       <th scope="col" className="px-5 py-3.5">
                         Bulan
                       </th>
@@ -191,21 +191,21 @@ export default function StatisticsView() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/40">
+                  <tbody className="divide-y divide-white/40 dark:divide-white/10">
                     {monthlyRows.map((row) => (
-                      <tr key={row.monthKey} className="transition-colors hover:bg-white/50">
-                        <td className="whitespace-nowrap px-5 py-3.5 font-medium text-slate-900">
+                      <tr key={row.monthKey} className="transition-colors hover:bg-white/50 dark:hover:bg-white/5">
+                        <td className="whitespace-nowrap px-5 py-3.5 font-medium text-slate-900 dark:text-slate-100">
                           {formatMonthLabel(row.monthKey)}
                         </td>
-                        <td className="whitespace-nowrap px-5 py-3.5 text-right font-semibold tabular-nums text-emerald-600">
+                        <td className="whitespace-nowrap px-5 py-3.5 text-right font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
                           Rp {formatNumberID(row.income)}
                         </td>
-                        <td className="whitespace-nowrap px-5 py-3.5 text-right font-semibold tabular-nums text-rose-600">
+                        <td className="whitespace-nowrap px-5 py-3.5 text-right font-semibold tabular-nums text-rose-600 dark:text-rose-400">
                           Rp {formatNumberID(row.expense)}
                         </td>
                         <td
                           className={`whitespace-nowrap px-5 py-3.5 text-right font-bold tabular-nums ${
-                            row.balance < 0 ? "text-rose-600" : "text-slate-900"
+                            row.balance < 0 ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-slate-100"
                           }`}
                         >
                           Rp {formatNumberID(row.balance)}

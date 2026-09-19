@@ -12,22 +12,22 @@ type Tone = "brand" | "income" | "expense";
 
 const TONE_STYLES: Record<Tone, { icon: string; iconBg: string; value: string; glow: string }> = {
   brand: {
-    icon: "text-blue-600",
-    iconBg: "bg-blue-500/10 border-blue-500/20",
-    value: "text-slate-900",
-    glow: "from-blue-500/5 to-transparent",
+    icon: "text-blue-600 dark:text-blue-400",
+    iconBg: "bg-blue-500/10 border-blue-500/20 dark:bg-blue-500/20 dark:border-blue-500/30",
+    value: "text-slate-900 dark:text-slate-100",
+    glow: "from-blue-500/5 dark:from-blue-500/15 to-transparent",
   },
   income: {
-    icon: "text-emerald-600",
-    iconBg: "bg-emerald-500/10 border-emerald-500/20",
-    value: "text-emerald-600",
-    glow: "from-emerald-500/5 to-transparent",
+    icon: "text-emerald-600 dark:text-emerald-400",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20 dark:bg-emerald-500/20 dark:border-emerald-500/30",
+    value: "text-emerald-600 dark:text-emerald-400",
+    glow: "from-emerald-500/5 dark:from-emerald-500/15 to-transparent",
   },
   expense: {
-    icon: "text-rose-600",
-    iconBg: "bg-rose-500/10 border-rose-500/20",
-    value: "text-rose-600",
-    glow: "from-rose-500/5 to-transparent",
+    icon: "text-rose-600 dark:text-rose-400",
+    iconBg: "bg-rose-500/10 border-rose-500/20 dark:bg-rose-500/20 dark:border-rose-500/30",
+    value: "text-rose-600 dark:text-rose-400",
+    glow: "from-rose-500/5 dark:from-rose-500/15 to-transparent",
   },
 };
 
@@ -74,7 +74,7 @@ function SummaryCard({ label, value, icon: Icon, tone, hint }: SummaryCardProps)
       <div className={`pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-gradient-to-bl ${styles.glow} blur-xl`} />
       
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</h2>
         <span className={`grid h-10 w-10 place-items-center rounded-2xl border backdrop-blur-md shadow-sm ${styles.iconBg}`}>
           <Icon aria-hidden="true" className={`h-5 w-5 ${styles.icon}`} />
         </span>
@@ -84,7 +84,7 @@ function SummaryCard({ label, value, icon: Icon, tone, hint }: SummaryCardProps)
       >
         {formatCurrency(value)}
       </p>
-      <p className="mt-1.5 text-xs text-slate-400">{hint}</p>
+      <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-400">{hint}</p>
     </article>
   );
 }

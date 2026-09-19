@@ -36,13 +36,13 @@ export default function MonthlySummary({
                 id="monthly-summary-month"
                 value={monthKey}
                 onChange={(event) => onMonthChange(event.target.value)}
-                className="w-full rounded-2xl ios-glass-input px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-800 focus-visible:outline-none transition-all cursor-pointer"
+                className="w-full rounded-2xl ios-glass-input px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus-visible:outline-none transition-all cursor-pointer"
               >
                 {months.length === 0 ? (
                   <option value={monthKey}>{formatMonthLabel(monthKey)}</option>
                 ) : (
                   months.map((month) => (
-                    <option key={month} value={month}>
+                    <option key={month} value={month} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                       {formatMonthLabel(month)}
                     </option>
                   ))
@@ -52,20 +52,20 @@ export default function MonthlySummary({
           ) : null
         }
       />
-      <dl className="divide-y divide-white/40 px-6 text-sm">
+      <dl className="divide-y divide-white/40 dark:divide-white/10 px-6 text-sm">
         <div className="flex items-center justify-between gap-4 py-3.5">
-          <dt className="text-slate-500 font-medium">Pemasukan</dt>
-          <dd className="font-semibold tabular-nums text-emerald-600">{formatCurrency(income)}</dd>
+          <dt className="text-slate-500 dark:text-slate-400 font-medium">Pemasukan</dt>
+          <dd className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{formatCurrency(income)}</dd>
         </div>
         <div className="flex items-center justify-between gap-4 py-3.5">
-          <dt className="text-slate-500 font-medium">Pengeluaran</dt>
-          <dd className="font-semibold tabular-nums text-rose-600">{formatCurrency(expense)}</dd>
+          <dt className="text-slate-500 dark:text-slate-400 font-medium">Pengeluaran</dt>
+          <dd className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">{formatCurrency(expense)}</dd>
         </div>
         <div className="flex items-center justify-between gap-4 py-3.5">
-          <dt className="font-semibold text-slate-900">Saldo Bulan Ini</dt>
+          <dt className="font-semibold text-slate-900 dark:text-slate-100">Saldo Bulan Ini</dt>
           <dd
             className={`text-base font-bold tabular-nums ${
-              balance < 0 ? "text-rose-600" : "text-slate-900"
+              balance < 0 ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-slate-100"
             }`}
           >
             {formatCurrency(balance)}

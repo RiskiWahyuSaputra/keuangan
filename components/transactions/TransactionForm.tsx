@@ -32,9 +32,9 @@ interface FormErrors {
 
 const MAX_AMOUNT_DIGITS = 15;
 const FIELD_CLASSES =
-  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none transition-all";
-const LABEL_CLASSES = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500";
-const ERROR_CLASSES = "mt-1.5 text-xs font-medium text-rose-600";
+  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none transition-all";
+const LABEL_CLASSES = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
+const ERROR_CLASSES = "mt-1.5 text-xs font-medium text-rose-600 dark:text-rose-400";
 
 /**
  * Modal form transaksi.
@@ -154,9 +154,9 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
                 className={`flex items-center justify-center gap-2 rounded-xl py-2 text-xs sm:text-sm font-semibold transition-all ${
                   selected
                     ? t === "income"
-                      ? "bg-white text-emerald-600 shadow-sm shadow-slate-900/10"
-                      : "bg-white text-rose-600 shadow-sm shadow-slate-900/10"
-                    : "text-slate-600 hover:text-slate-900"
+                      ? "bg-white dark:bg-slate-700/90 text-emerald-600 dark:text-emerald-400 shadow-sm shadow-slate-900/10"
+                      : "bg-white dark:bg-slate-700/90 text-rose-600 dark:text-rose-400 shadow-sm shadow-slate-900/10"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 <Icon aria-hidden="true" className="h-4 w-4" />
@@ -185,7 +185,7 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
           />
         </div>
         {formattedAmountPreview ? (
-          <p className="mt-1 text-xs font-medium text-slate-500">{formattedAmountPreview}</p>
+          <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{formattedAmountPreview}</p>
         ) : null}
         {errors.amount ? (
           <p id="amount-error" className={ERROR_CLASSES}>
@@ -209,9 +209,9 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
           aria-invalid={Boolean(errors.category)}
           aria-describedby={errors.category ? "category-error" : undefined}
         >
-          <option value="">Pilih kategori...</option>
+          <option value="" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">Pilih kategori...</option>
           {categories.map((cat) => (
-            <option key={cat} value={cat}>
+            <option key={cat} value={cat} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
               {cat}
             </option>
           ))}
@@ -260,7 +260,7 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
         />
       </div>
 
-      <div className="flex flex-col-reverse gap-2.5 pt-3 sm:flex-row sm:justify-end border-t border-white/40">
+      <div className="flex flex-col-reverse gap-2.5 pt-3 sm:flex-row sm:justify-end border-t border-white/40 dark:border-white/10">
         <Button variant="secondary" onClick={onClose}>
           Batal
         </Button>

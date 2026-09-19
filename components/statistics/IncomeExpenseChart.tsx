@@ -37,8 +37,8 @@ function MonthlyTooltip({ active, payload }: ChartTooltipProps) {
   const monthKey = payload[0]?.payload?.monthKey;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 shadow-lg shadow-slate-900/5">
-      <p className="text-xs font-medium text-slate-500">
+    <div className="rounded-2xl ios-glass-modal px-4 py-3 shadow-lg">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
         {monthKey ? formatMonthLabel(monthKey) : "Ringkasan"}
       </p>
       <ul className="mt-1.5 space-y-1">
@@ -47,7 +47,7 @@ function MonthlyTooltip({ active, payload }: ChartTooltipProps) {
             key={String(item.dataKey)}
             className="flex items-center justify-between gap-5 text-xs"
           >
-            <span className="flex items-center gap-1.5 text-slate-600">
+            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <span
                 aria-hidden="true"
                 className="h-2 w-2 rounded-full"
@@ -55,7 +55,7 @@ function MonthlyTooltip({ active, payload }: ChartTooltipProps) {
               />
               {item.name}
             </span>
-            <span className="font-semibold tabular-nums text-slate-900">
+            <span className="font-bold tabular-nums text-slate-900 dark:text-slate-100">
               {formatCurrency(Number(item.value ?? 0))}
             </span>
           </li>
@@ -70,24 +70,24 @@ export default function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
     <div className="px-2 py-4 sm:px-4">
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barGap={4}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(148, 163, 184, 0.2)" />
           <XAxis
             dataKey="label"
             tickLine={false}
             axisLine={false}
-            tick={{ fontSize: 12, fill: "#64748b" }}
+            tick={{ fontSize: 12, fill: "#94a3b8" }}
           />
           <YAxis
             tickLine={false}
             axisLine={false}
             width={70}
-            tick={{ fontSize: 12, fill: "#64748b" }}
+            tick={{ fontSize: 12, fill: "#94a3b8" }}
             tickFormatter={(value) => formatCurrencyShort(Number(value))}
           />
-          <Tooltip content={<MonthlyTooltip />} cursor={{ fill: "#f1f5f9" }} />
+          <Tooltip content={<MonthlyTooltip />} cursor={{ fill: "rgba(148, 163, 184, 0.08)" }} />
           <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} iconType="circle" iconSize={8} />
           <Bar dataKey="income" name="Pemasukan" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={28} />
-          <Bar dataKey="expense" name="Pengeluaran" fill="#ef4444" radius={[6, 6, 0, 0]} maxBarSize={28} />
+          <Bar dataKey="expense" name="Pengeluaran" fill="#f43f5e" radius={[6, 6, 0, 0]} maxBarSize={28} />
         </BarChart>
       </ResponsiveContainer>
     </div>

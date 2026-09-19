@@ -106,7 +106,7 @@ export default function SettingsView() {
               title="Cadangan & Pemulihan"
               description="Cadangkan, pulihkan, atau bersihkan data transaksi di browser ini."
             />
-            <div className="divide-y divide-white/40">
+            <div className="divide-y divide-white/40 dark:divide-white/10">
               <SettingRow
                 icon={Download}
                 title="Export Data"
@@ -166,8 +166,8 @@ export default function SettingsView() {
                 <span
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border backdrop-blur-sm shadow-xs ${
                     isPersistent
-                      ? "bg-emerald-500/15 text-emerald-700 border-emerald-500/30"
-                      : "bg-amber-500/15 text-amber-700 border-amber-500/30"
+                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
+                      : "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30"
                   }`}
                 >
                   <Database aria-hidden="true" className="h-3.5 w-3.5" />
@@ -176,14 +176,14 @@ export default function SettingsView() {
               }
             />
             <div className="space-y-4 px-6 py-5">
-              <p className="flex items-start gap-3 text-sm leading-6 text-slate-600">
+              <p className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
                 <HardDrive aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
                 <span>
                   Data transaksi disimpan di LocalStorage browser. Data tidak dikirim ke server atau
                   database.
                 </span>
               </p>
-              <p className="flex items-start gap-3 text-sm leading-6 text-slate-600">
+              <p className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
                 <ShieldCheck aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                 <span>
                   Data disimpan secara lokal di browser ini. Menghapus data browser atau menggunakan
@@ -203,10 +203,10 @@ export default function SettingsView() {
         description="Pilih bagaimana data baru akan digabungkan dengan transaksi yang ada saat ini."
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
-            Ditemukan <span className="font-semibold text-slate-900">{pendingImport?.length ?? 0}</span> transaksi pada file cadangan.
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Ditemukan <span className="font-semibold text-slate-900 dark:text-slate-100">{pendingImport?.length ?? 0}</span> transaksi pada file cadangan.
           </p>
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:justify-end border-t border-white/50 pt-4">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:justify-end border-t border-white/50 dark:border-white/10 pt-4">
             <Button variant="secondary" onClick={() => handleImport("merge")}>
               Gabungkan (Merge)
             </Button>
@@ -226,10 +226,10 @@ export default function SettingsView() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Tindakan ini tidak dapat dibatalkan. Pastikan kamu sudah melakukan export data jika ingin menyimpannya.
           </p>
-          <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end border-t border-white/50 pt-4">
+          <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end border-t border-white/50 dark:border-white/10 pt-4">
             <Button variant="secondary" onClick={() => setResetStep(0)}>
               Batal
             </Button>
@@ -261,21 +261,21 @@ function SettingRow({
   children,
 }: SettingRowProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-white/30">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-white/30 dark:hover:bg-white/5">
       <div className="flex items-start gap-3.5">
         <span
           className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl border backdrop-blur-md shadow-xs ${
             danger
-              ? "bg-rose-500/10 border-rose-500/20 text-rose-600"
-              : "bg-blue-500/10 border-blue-500/20 text-blue-600"
+              ? "bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400"
+              : "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400"
           }`}
         >
           <Icon aria-hidden="true" className="h-5 w-5" />
         </span>
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
-          <p className="text-xs text-slate-500">{description}</p>
-          {meta ? <p className="mt-0.5 text-2xs text-slate-400 font-medium">{meta}</p> : null}
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{description}</p>
+          {meta ? <p className="mt-0.5 text-2xs text-slate-400 dark:text-slate-500 font-medium">{meta}</p> : null}
         </div>
       </div>
       <div className="sm:shrink-0">{children}</div>

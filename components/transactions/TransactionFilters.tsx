@@ -19,8 +19,8 @@ interface TransactionFiltersProps {
 }
 
 const CONTROL_CLASSES =
-  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none transition-all";
-const LABEL_CLASSES = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500";
+  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none transition-all";
+const LABEL_CLASSES = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
 
 export default function TransactionFilters({
   filter,
@@ -77,8 +77,8 @@ export default function TransactionFilters({
                   aria-pressed={selected}
                   className={`min-w-[6rem] flex-1 whitespace-nowrap rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-none ${
                     selected
-                      ? "bg-white text-blue-600 shadow-sm shadow-slate-900/10"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-white dark:bg-slate-700/90 text-blue-600 dark:text-blue-400 shadow-sm shadow-slate-900/10"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {option.label}
@@ -98,9 +98,9 @@ export default function TransactionFilters({
             onChange={(event) => onFilterChange({ month: event.target.value })}
             className={CONTROL_CLASSES}
           >
-            <option value="">Semua Bulan</option>
+            <option value="" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">Semua Bulan</option>
             {months.map((month) => (
-              <option key={month} value={month}>
+              <option key={month} value={month} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 {formatMonthLabel(month)}
               </option>
             ))}
@@ -117,9 +117,9 @@ export default function TransactionFilters({
             onChange={(event) => onFilterChange({ category: event.target.value })}
             className={CONTROL_CLASSES}
           >
-            <option value="">Semua Kategori</option>
+            <option value="" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">Semua Kategori</option>
             {categories.map((category) => (
-              <option key={category} value={category}>
+              <option key={category} value={category} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 {category}
               </option>
             ))}
@@ -127,20 +127,20 @@ export default function TransactionFilters({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/50 pt-4">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/50 dark:border-white/10 pt-4">
         <div className="flex items-center gap-3">
           <label htmlFor="transaction-sort" className="sr-only">
             Urutkan transaksi
           </label>
-          <span className="text-xs font-medium text-slate-500">Urutkan:</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Urutkan:</span>
           <select
             id="transaction-sort"
             value={sort}
             onChange={(event) => onSortChange(event.target.value as SortOption)}
-            className="rounded-xl ios-glass-input px-3 py-1.5 text-xs font-medium text-slate-800 focus-visible:outline-none"
+            className="rounded-xl ios-glass-input px-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus-visible:outline-none"
           >
             {SORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
                 {option.label}
               </option>
             ))}
@@ -148,7 +148,7 @@ export default function TransactionFilters({
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-slate-500">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
             {resultCount} transaksi ditemukan
           </span>
           {active ? (

@@ -86,7 +86,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-slate-900/30 p-0 backdrop-blur-md transition-all sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-slate-900/40 dark:bg-black/60 p-0 backdrop-blur-md transition-all sm:items-center sm:p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -99,13 +99,13 @@ export default function Modal({
         aria-describedby={description ? descriptionId : undefined}
         className={`max-h-[92vh] w-full overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-glass-modal ${SIZE_CLASSES[size]}`}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/60 bg-white/50 px-6 py-4 backdrop-blur-md">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-slate-900/60 px-6 py-4 backdrop-blur-md">
           <div>
-            <h2 id={titleId} className="text-base font-semibold tracking-tight text-slate-900">
+            <h2 id={titleId} className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
               {title}
             </h2>
             {description ? (
-              <p id={descriptionId} className="mt-0.5 text-xs text-slate-500">
+              <p id={descriptionId} className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 {description}
               </p>
             ) : null}
@@ -114,7 +114,7 @@ export default function Modal({
             type="button"
             onClick={onClose}
             aria-label="Tutup dialog"
-            className="grid h-8 w-8 place-items-center rounded-xl text-slate-400 transition-colors hover:bg-white/60 hover:text-slate-700 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="grid h-8 w-8 place-items-center rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors hover:bg-white/60 dark:hover:bg-white/10 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
             <X aria-hidden="true" className="h-4 w-4" />
           </button>
