@@ -11,6 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useQuickAdd } from "@/components/ui/QuickAddProvider";
+import { haptic } from "@/lib/haptic";
 
 interface TabItem {
   href: string;
@@ -51,6 +52,7 @@ export default function MobileTabBar() {
             <Link
               key={tab.href}
               href={tab.href}
+              onClick={() => haptic.light()}
               className={`flex flex-col items-center justify-center py-1 px-3 min-w-[3.75rem] rounded-2xl transition-all active:scale-90 ${
                 active
                   ? "text-blue-600 dark:text-blue-400 font-semibold"
@@ -72,7 +74,10 @@ export default function MobileTabBar() {
         <div className="relative -top-3 px-1">
           <button
             type="button"
-            onClick={openQuickAdd}
+            onClick={() => {
+              haptic.medium();
+              openQuickAdd();
+            }}
             aria-label="Tambah Transaksi Baru"
             className="group relative flex h-13 w-13 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 via-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/40 border-2 border-white dark:border-slate-800 transition-transform active:scale-90 hover:shadow-xl hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
@@ -88,6 +93,7 @@ export default function MobileTabBar() {
             <Link
               key={tab.href}
               href={tab.href}
+              onClick={() => haptic.light()}
               className={`flex flex-col items-center justify-center py-1 px-3 min-w-[3.75rem] rounded-2xl transition-all active:scale-90 ${
                 active
                   ? "text-blue-600 dark:text-blue-400 font-semibold"

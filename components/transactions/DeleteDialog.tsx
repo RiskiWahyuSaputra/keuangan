@@ -3,6 +3,7 @@
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { formatDateID } from "@/lib/date";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { haptic } from "@/lib/haptic";
 import type { Transaction } from "@/types/transaction";
 
 interface DeleteDialogProps {
@@ -25,7 +26,10 @@ export default function DeleteDialog({
       cancelLabel="Batal"
       confirmVariant="danger"
       onCancel={onCancel}
-      onConfirm={onConfirm}
+      onConfirm={() => {
+        haptic.warning();
+        onConfirm();
+      }}
     >
       {transaction ? (
         <dl className="rounded-2xl border border-white/60 dark:border-white/10 bg-white/50 dark:bg-slate-800/60 p-4 text-sm backdrop-blur-sm shadow-xs">

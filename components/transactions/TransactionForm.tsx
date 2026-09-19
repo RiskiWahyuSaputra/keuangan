@@ -8,6 +8,7 @@ import Modal from "@/components/ui/Modal";
 import { getCategories } from "@/lib/categories";
 import { isValidDateString, todayISO } from "@/lib/date";
 import { formatNumberID } from "@/lib/formatCurrency";
+import { haptic } from "@/lib/haptic";
 import {
   TRANSACTION_TYPES,
   TRANSACTION_TYPE_LABELS,
@@ -119,6 +120,7 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
       date,
       description: description.trim(),
     });
+    haptic.medium();
   };
 
   const handleAmountChange = (raw: string) => {
@@ -187,6 +189,38 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
         {formattedAmountPreview ? (
           <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{formattedAmountPreview}</p>
         ) : null}
+
+        {/* Quick Amount Presets ala iOS Banking */}
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {[10000, 25000, 50000, 100000, 250000, 500000].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => {
+                haptic.light();
+                const current = Number(amountDigits || 0);
+                const next = current + preset;
+                setAmountDigits(String(next).slice(0, MAX_AMOUNT_DIGITS));
+                setErrors((c) => ({ ...c, amount: undefined }));
+              }}
+              className="rounded-xl border border-white/50 dark:border-white/10 bg-white/60 dark:bg-slate-800/60 px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 shadow-2xs backdrop-blur-sm transition-all hover:bg-white dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 active:scale-90"
+            >
+              +{preset >= 1000 ? `${preset / 1000}rb` : preset}
+            </button>
+          ))}
+          {amountDigits && (
+            <button
+              type="button"
+              onClick={() => {
+                haptic.light();
+                setAmountDigits("");
+              }}
+              className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-2.5 py-1 text-[11px] font-semibold text-rose-600 dark:text-rose-400 transition-all active:scale-90"
+            >
+              Reset
+            </button>
+          )}
+        </div>
         {errors.amount ? (
           <p id="amount-error" className={ERROR_CLASSES}>
             {errors.amount}
