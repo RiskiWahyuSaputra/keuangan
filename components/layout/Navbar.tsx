@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   ReceiptText,
   Settings,
+  Target,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/transactions", label: "Transaksi", icon: ReceiptText },
+  { href: "/targets", label: "Target", icon: Target },
   { href: "/statistics", label: "Statistik", icon: ChartPie },
   { href: "/settings", label: "Pengaturan", icon: Settings },
 ];
