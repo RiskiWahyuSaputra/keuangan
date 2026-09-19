@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -7,7 +8,6 @@ import {
   LayoutDashboard,
   ReceiptText,
   Settings,
-  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,9 +41,16 @@ export default function Navbar() {
           href="/"
           className="flex items-center gap-2.5 rounded-2xl p-1 transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
         >
-          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/25 border border-white/30">
-            <Wallet aria-hidden="true" className="h-5 w-5" />
-          </span>
+          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl shadow-sm">
+            <Image
+              src="/logo-icon.png"
+              alt="Logo DompetQ"
+              width={36}
+              height={36}
+              className="h-full w-full object-contain drop-shadow-xs"
+              priority
+            />
+          </div>
           <span className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-lg">
             DompetQ
           </span>

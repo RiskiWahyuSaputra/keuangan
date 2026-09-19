@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   },
   description:
     "Catat pemasukan dan pengeluaran pribadi dengan mudah. Data tersimpan di browser tanpa server maupun database.",
+  icons: {
+    icon: "/favicon-64.png",
+    apple: "/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
