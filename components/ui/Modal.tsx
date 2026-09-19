@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 interface ModalProps {
   open: boolean;
@@ -28,6 +28,27 @@ export default function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const descriptionId = useId();
+
+  // State untuk mengontrol animasi unmount (smooth exit)
+  const [mounted, setMounted] = useState(open);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      // Biarkan frame browser render dulu agar animasi transition masuk berjalan mulus
+      const frame = requestAnimationFrame(() => {
+        setVisible(true);
+      });
+      return () => cancelAnimationFrame(frame);
+    } else {
+      setVisible(false);
+      const timer = setTimeout(() => {
+        setMounted(false);
+      }, 300); // Sinkron dengan durasi animasi exit 300ms
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -64,7 +85,7 @@ export default function Modal({
   );
 
   useEffect(() => {
-    if (!open) return;
+    if (!mounted) return;
     document.addEventListener("keydown", handleKeyDown);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -72,21 +93,25 @@ export default function Modal({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [open, handleKeyDown]);
+  }, [mounted, handleKeyDown]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!visible) return;
     const target = panelRef.current?.querySelector<HTMLElement>(
       "[data-autofocus], input, select, textarea, button",
     );
     target?.focus();
-  }, [open]);
+  }, [visible]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-slate-900/40 dark:bg-black/60 p-0 animate-ios-backdrop sm:items-center sm:p-4"
+      className={`fixed inset-0 z-50 flex items-end justify-center overflow-y-auto p-0 sm:items-center sm:p-4 transition-all duration-300 ease-out ${
+        visible
+          ? "bg-slate-900/40 dark:bg-black/60 backdrop-blur-md opacity-100"
+          : "bg-transparent backdrop-blur-none opacity-0 pointer-events-none"
+      }`}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -97,10 +122,14 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        className={`max-h-[92vh] w-full overflow-y-auto rounded-t-[2rem] sm:rounded-3xl ios-glass-modal animate-ios-modal shadow-2xl ${SIZE_CLASSES[size]}`}
+        className={`max-h-[92vh] w-full overflow-y-auto rounded-t-[2rem] sm:rounded-3xl ios-glass-modal shadow-2xl ${SIZE_CLASSES[size]} transform transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          visible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-full sm:translate-y-6 sm:scale-95 opacity-0"
+        }`}
       >
         {/* iOS Handlebar Indicator untuk tampilan mobile */}
-        <div className="flex justify-center pt-2.5 pb-0.5 sm:hidden">
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="h-1.5 w-10 rounded-full bg-slate-300 dark:bg-slate-600/70" />
         </div>
 

@@ -32,7 +32,7 @@ interface FormErrors {
 
 const MAX_AMOUNT_DIGITS = 15;
 const FIELD_CLASSES =
-  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none transition-all";
+  "w-full rounded-2xl ios-glass-input px-3.5 py-2.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none transition-all";
 const LABEL_CLASSES = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
 const ERROR_CLASSES = "mt-1.5 text-xs font-medium text-rose-600 dark:text-rose-400";
 
