@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { Eye, EyeOff, TrendingDown, TrendingUp, Wallet, ShieldCheck, type LucideIcon } from "lucide-react";
+import { Eye, EyeOff, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 
 import { formatCurrency } from "@/lib/formatCurrency";
 
@@ -29,7 +28,7 @@ export default function SummaryCards({ balance, income, expense }: SummaryCardsP
     setHideBalance(next);
     localStorage.setItem(STORAGE_KEY, String(next));
     if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(25);
+      navigator.vibrate(20);
     }
   };
 
@@ -40,34 +39,22 @@ export default function SummaryCards({ balance, income, expense }: SummaryCardsP
 
   return (
     <div className="space-y-4">
-      {/* 1. Apple Wallet / Titanium Virtual Card Utama */}
-      <div className="relative overflow-hidden rounded-[2.25rem] p-6 sm:p-7 text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/20 border border-white/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 dark:from-slate-950 dark:via-blue-950/80 dark:to-slate-900">
-        {/* Specular Light & Mesh Glow Background */}
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-blue-500/30 blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.15),transparent_70%)] pointer-events-none" />
+      {/* 1. Kartu Saldo Utama Glassmorphism iOS yang Bersih & Elegan */}
+      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-7 text-white shadow-xl transition-all duration-300 border border-white/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 dark:from-slate-950 dark:via-blue-950/80 dark:to-slate-900">
+        {/* Glow Ambient Halus di Latar Belakang */}
+        <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full bg-blue-500/25 blur-3xl pointer-events-none" />
+        <div className="absolute -left-12 -bottom-12 h-52 w-52 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.12),transparent_70%)] pointer-events-none" />
 
-        {/* Baris Atas: Logo & Toggle Privasi */}
+        {/* Baris Atas: Label & Tombol Mode Privasi */}
         <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative h-9 w-9 rounded-xl bg-white/10 p-1.5 backdrop-blur-md border border-white/20 shadow-inner flex items-center justify-center">
-              <Image
-                src="/logo-icon.png"
-                alt="DompetQ"
-                width={28}
-                height={28}
-                className="h-full w-full object-contain"
-              />
-            </div>
-            <div>
-              <span className="text-xs font-bold tracking-widest text-blue-200/80 uppercase">
-                DompetQ Platinum
-              </span>
-              <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
-                <ShieldCheck className="h-3 w-3" />
-                <span>Penyimpanan Lokal Aktif</span>
-              </div>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xs">
+              <Wallet className="h-4 w-4 text-blue-300" />
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-200/90">
+              Saldo Saat Ini
+            </span>
           </div>
 
           <button
@@ -80,35 +67,24 @@ export default function SummaryCards({ balance, income, expense }: SummaryCardsP
             {hideBalance ? (
               <>
                 <Eye className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Tampilkan</span>
+                <span className="text-xs">Tampilkan</span>
               </>
             ) : (
               <>
                 <EyeOff className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Sembunyikan</span>
+                <span className="text-xs">Sembunyikan</span>
               </>
             )}
           </button>
         </div>
 
-        {/* EMV Chip Visual Simbolik */}
-        <div className="relative z-10 mt-6 flex items-center gap-4">
-          <div className="h-8 w-11 rounded-lg bg-gradient-to-tr from-amber-400/80 via-yellow-200/90 to-amber-500/80 p-1 shadow-sm border border-yellow-200/50 flex flex-col justify-between">
-            <div className="h-1.5 w-full border-b border-amber-800/20" />
-            <div className="h-1.5 w-full border-b border-amber-800/20" />
-          </div>
-          <span className="text-[11px] font-mono tracking-wider text-slate-300/80">
-            •••• •••• •••• 2026
-          </span>
-        </div>
-
-        {/* Saldo Utama */}
+        {/* Nominal Saldo Utama */}
         <div className="relative z-10 mt-5">
-          <span className="text-xs font-semibold tracking-wider uppercase text-blue-200/80">
-            Saldo Saat Ini
-          </span>
-          <p className="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight tabular-nums drop-shadow-sm">
+          <p className="text-3xl sm:text-4xl font-extrabold tracking-tight tabular-nums drop-shadow-sm">
             {maskValue(balance)}
+          </p>
+          <p className="mt-1 text-xs text-blue-200/70">
+            {balance < 0 ? "Pengeluaran melebihi pemasukan" : "Pemasukan dikurangi pengeluaran"}
           </p>
         </div>
       </div>
