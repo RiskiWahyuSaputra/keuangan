@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import {
   ChartPie,
   LayoutDashboard,
+  PiggyBank,
   ReceiptText,
   Settings,
   Target,
@@ -25,6 +26,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/transactions", label: "Transaksi", icon: ReceiptText },
   { href: "/targets", label: "Target", icon: Target },
+  { href: "/savings", label: "Celengan", icon: PiggyBank },
   { href: "/statistics", label: "Statistik", icon: ChartPie },
   { href: "/settings", label: "Pengaturan", icon: Settings },
 ];

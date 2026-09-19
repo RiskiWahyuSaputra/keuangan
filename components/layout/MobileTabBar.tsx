@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   ChartPie,
   LayoutDashboard,
+  PiggyBank,
   Plus,
   ReceiptText,
   Settings,
@@ -23,11 +24,13 @@ interface TabItem {
 const LEFT_TABS: readonly TabItem[] = [
   { href: "/", label: "Home", icon: LayoutDashboard },
   { href: "/transactions", label: "Transaksi", icon: ReceiptText },
+  { href: "/targets", label: "Target", icon: Target },
 ];
 
 const RIGHT_TABS: readonly TabItem[] = [
-  { href: "/targets", label: "Target", icon: Target },
+  { href: "/savings", label: "Celengan", icon: PiggyBank },
   { href: "/statistics", label: "Statistik", icon: ChartPie },
+  { href: "/settings", label: "Opsi", icon: Settings },
 ];
 
 function isActivePath(pathname: string, href: string): boolean {
@@ -86,7 +89,7 @@ export default function MobileTabBar() {
           </button>
         </div>
 
-        {/* Sisi Kanan: Target & Statistik */}
+        {/* Sisi Kanan: Celengan & Statistik & Opsi */}
         {RIGHT_TABS.map((tab) => {
           const active = isActivePath(pathname, tab.href);
           const Icon = tab.icon;
@@ -95,7 +98,7 @@ export default function MobileTabBar() {
               key={tab.href}
               href={tab.href}
               onClick={() => haptic.light()}
-              className={`flex flex-col items-center justify-center py-1 px-3 min-w-[3.75rem] rounded-2xl transition-all active:scale-90 ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 min-w-[3.4rem] rounded-2xl transition-all active:scale-90 ${
                 active
                   ? "text-blue-600 dark:text-blue-400 font-semibold"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
@@ -111,25 +114,6 @@ export default function MobileTabBar() {
             </Link>
           );
         })}
-
-        {/* Tab Pengaturan di Mobile */}
-        <Link
-          href="/settings"
-          onClick={() => haptic.light()}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 min-w-[3.5rem] rounded-2xl transition-all active:scale-90 ${
-            isActivePath(pathname, "/settings")
-              ? "text-blue-600 dark:text-blue-400 font-semibold"
-              : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
-          }`}
-        >
-          <span className="grid h-6 w-6 place-items-center relative">
-            <Settings className="h-5 w-5" />
-            {isActivePath(pathname, "/settings") && (
-              <span className="absolute -bottom-1 h-1 w-1 rounded-full bg-blue-600 dark:bg-blue-400" />
-            )}
-          </span>
-          <span className="mt-1 text-[10px] tracking-tight">Opsi</span>
-        </Link>
       </nav>
     </div>
   );

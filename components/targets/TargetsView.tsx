@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 
 import MonthlySummary from "@/components/dashboard/MonthlySummary";
-import SavingsGoals from "@/components/dashboard/SavingsGoals";
 import PageHeader from "@/components/layout/PageHeader";
 import LoadingState from "@/components/ui/LoadingState";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -44,8 +43,8 @@ export default function TargetsView() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Target & Celengan"
-          description="Kelola batas budget bulanan dan wujudkan rencana tabungan impianmu."
+          title="Target Budget"
+          description="Pantau batas pengeluaran bulanan dan jaga keuangan tetap sehat."
         />
         <LoadingState />
       </div>
@@ -55,27 +54,19 @@ export default function TargetsView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Target & Celengan"
-        description="Kelola batas budget bulanan dan pantau perkembangan celengan impianmu."
+        title="Target Budget"
+        description="Kelola dan pantau batas pengeluaran bulanan dengan Activity Ring interaktif."
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Kolom Kiri: Target Budget Bulanan dengan Activity Ring */}
-        <div className="space-y-4">
-          <MonthlySummary
-            monthKey={activeMonth}
-            months={monthOptions}
-            income={monthlyIncome}
-            expense={monthlyExpense}
-            balance={monthlyBalance}
-            onMonthChange={setSelectedMonth}
-          />
-        </div>
-
-        {/* Kolom Kanan: Celengan Impian / Savings Goals */}
-        <div className="space-y-4">
-          <SavingsGoals />
-        </div>
+      <div className="max-w-xl mx-auto">
+        <MonthlySummary
+          monthKey={activeMonth}
+          months={monthOptions}
+          income={monthlyIncome}
+          expense={monthlyExpense}
+          balance={monthlyBalance}
+          onMonthChange={setSelectedMonth}
+        />
       </div>
     </div>
   );
