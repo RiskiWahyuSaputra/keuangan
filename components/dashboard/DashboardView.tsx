@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import MonthlySummary from "@/components/dashboard/MonthlySummary";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import SummaryCards from "@/components/dashboard/SummaryCards";
+import QuickMagicInput from "@/components/dashboard/QuickMagicInput";
 import PageHeader from "@/components/layout/PageHeader";
 import TopExpenseCategories from "@/components/statistics/TopExpenseCategories";
 import DeleteDialog from "@/components/transactions/DeleteDialog";
@@ -135,6 +136,9 @@ export default function DashboardView() {
       ) : (
         <div className="space-y-5">
           <SummaryCards balance={balance} income={totalIncome} expense={totalExpense} />
+
+          {/* Kolom Catat Kilat 1 Baris ala AI Assistant */}
+          <QuickMagicInput />
 
           <div className="grid gap-5 lg:grid-cols-3">
             <div className="lg:col-span-2">

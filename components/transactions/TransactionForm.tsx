@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { getCategories } from "@/lib/categories";
+import { parseBankText } from "@/lib/bankParser";
 import { isValidDateString, todayISO } from "@/lib/date";
 import { formatNumberID } from "@/lib/formatCurrency";
 import { haptic } from "@/lib/haptic";
@@ -133,8 +134,40 @@ function TransactionFields({ transaction, onClose, onSubmit }: TransactionFields
     ? `Rp ${formatNumberID(Number(amountDigits))}`
     : null;
 
+  const handlePasteReceipt = async () => {
+    haptic.light();
+    try {
+      if (!navigator.clipboard) return;
+      const text = await navigator.clipboard.readText();
+      if (!text || text.trim() === "") return;
+
+      const parsed = parseBankText(text);
+      if (parsed.amount > 0) {
+        setType(parsed.type);
+        setAmountDigits(parsed.amount.toString());
+        setCategory(parsed.category);
+        if (parsed.description) setDescription(parsed.description);
+        if (parsed.date) setDate(parsed.date);
+        haptic.success();
+      }
+    } catch {}
+  };
+
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
+      {/* Tombol Tempel Cepat di Form */}
+      {!transaction && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handlePasteReceipt}
+            className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline active:scale-95 transition-all"
+          >
+            <span>⚡ Tempel Bukti Transfer / Resi</span>
+          </button>
+        </div>
+      )}
+
       {/* iOS Segmented Type Switcher */}
       <div>
         <span className={LABEL_CLASSES}>Jenis Transaksi</span>
