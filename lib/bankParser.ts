@@ -8,7 +8,7 @@ export interface ParsedBankTransaction {
 
 /**
  * Otomatis mendeteksi teks notifikasi transaksi Bank & E-Wallet di Indonesia:
- * BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay, QRIS.
+ * DANA, SeaBank, BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, QRIS, dsb.
  */
 export function parseBankText(rawText: string): ParsedBankTransaction {
   const text = rawText.replace(/[\r\n]+/g, " ").trim();
@@ -16,35 +16,36 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
 
   // 1. Deteksi Tipe (Pemasukan vs Pengeluaran)
   let type: "income" | "expense" = "expense";
+
   if (
     lower.includes("uang masuk") ||
     lower.includes("transfer masuk") ||
     lower.includes("dana masuk") ||
+    lower.includes("saldo bertambah") ||
+    lower.includes("menerima uang") ||
+    lower.includes("kamu menerima") ||
     lower.includes("cr ") ||
     lower.includes("kredit") ||
     lower.includes("diterima dari") ||
-    lower.includes("top up berhasil")
+    lower.includes("top up berhasil") ||
+    lower.includes("pengembalian dana") ||
+    lower.includes("cashback")
   ) {
     type = "income";
   }
 
   // 2. Ekstraksi Nominal Uang (Rp XX.XXX atau IDR XX.XXX atau angka)
   let amount = 0;
-  // Regex mencari format: Rp 50.000 / Rp.50,000 / IDR 50.000 / Rp50000
   const rpRegex = /(?:rp\.?|idr)\s*([\d.,]+)/i;
   const rpMatch = text.match(rpRegex);
 
   if (rpMatch && rpMatch[1]) {
-    // Normalisasi: hilangkan titik pemisah ribuan atau sesuaikan koma
     let cleanNum = rpMatch[1].trim();
     if (cleanNum.includes(".") && cleanNum.includes(",")) {
-      // Misal 50.000,00
       cleanNum = cleanNum.replace(/\./g, "").replace(",", ".");
     } else if (cleanNum.includes(".")) {
-      // Format Indonesia 50.000
       cleanNum = cleanNum.replace(/\./g, "");
     } else if (cleanNum.includes(",")) {
-      // Kadang 50,000
       cleanNum = cleanNum.replace(/,/g, "");
     }
     const val = parseFloat(cleanNum);
@@ -53,7 +54,6 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
     }
   }
 
-  // Fallback regex jika tanpa embel-embel Rp (misal: "sebesar 50000")
   if (amount === 0) {
     const fallbackRegex = /(?:sebesar|nominal|jumlah)\s*[:=]?\s*([\d.,]+)/i;
     const fbMatch = text.match(fallbackRegex);
@@ -64,30 +64,50 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
     }
   }
 
-  // 3. Ekstraksi Nama Toko / Penerima / Merchant
+  // 3. Ekstraksi Nama Toko / Penerima / Bank (misal SeaBank, DANA, BCA, dsb)
   let description = "Transaksi Otomatis";
-  // Contoh pola: "Pembayaran QRIS ke KOPI KENANGAN BERHASIL"
-  const merchantMatch =
-    text.match(/(?:ke|penerima|merchant|di|toko)\s+([A-Za-z0-9\s&'-]{3,30}?)(?:\s+(?:berhasil|sukses|pada|tanggal|\.|\,|$))/i) ||
-    text.match(/(?:transfer ke|bayar ke)\s+([A-Za-z0-9\s&'-]{3,30})/i);
 
-  if (merchantMatch && merchantMatch[1]) {
-    description = merchantMatch[1].trim();
+  // Pola spesifik transfer bank / e-wallet
+  // Contoh DANA: "Kirim Uang Rp 100.000 ke SEABANK - RISKI WAHYU SAPUTRA berhasil"
+  // Contoh DANA: "Kamu berhasil kirim uang ke SEABANK"
+  // Contoh SeaBank: "Transfer ke RISKI WAHYU (SeaBank) berhasil"
+  const transferMatch =
+    text.match(/(?:kirim uang ke|transfer ke|bayar ke|kirim ke)\s+([A-Za-z0-9\s&'.-]{3,35}?)(?:\s+(?:berhasil|sukses|pada|sebesar|\.|\,|-|$))/i) ||
+    text.match(/(?:ke|penerima|merchant|di|toko)\s+([A-Za-z0-9\s&'.-]{3,35}?)(?:\s+(?:berhasil|sukses|pada|tanggal|\.|\,|$))/i);
+
+  if (transferMatch && transferMatch[1]) {
+    description = transferMatch[1].trim();
+  } else if (lower.includes("seabank")) {
+    description = type === "income" ? "Transfer dari SeaBank" : "Transfer ke SeaBank";
+  } else if (lower.includes("dana")) {
+    description = type === "income" ? "Terima Uang DANA" : "Transfer DANA";
   } else if (lower.includes("qris")) {
     description = "Pembayaran QRIS";
-  } else if (lower.includes("transfer")) {
-    description = type === "income" ? "Transfer Masuk" : "Transfer Keluar";
   } else if (lower.includes("gopay") || lower.includes("gojek")) {
     description = "Transaksi GoPay";
   } else if (lower.includes("shopee")) {
     description = "Transaksi Shopee";
+  } else if (lower.includes("transfer")) {
+    description = type === "income" ? "Transfer Masuk" : "Transfer Keluar";
   }
 
-  // 4. Kategori Otomatis berdasarkan Keyword Pintar
+  // Bersihkan kata penghubung sisa
+  description = description.replace(/\s+-\s+$/, "").trim();
+
+  // 4. Kategori Otomatis berdasarkan Kata Kunci
   let category = "Lainnya";
   const descLower = `${description} ${text}`.toLowerCase();
 
+  // Jika transfer antar bank sendiri / e-wallet (DANA ke SeaBank)
   if (
+    (descLower.includes("dana") && descLower.includes("seabank")) ||
+    descLower.includes("kirim uang") ||
+    descLower.includes("transfer ke rekening") ||
+    descLower.includes("tarik saldo") ||
+    descLower.includes("pindah dana")
+  ) {
+    category = "Lainnya"; // Atau kategori Transfer
+  } else if (
     descLower.includes("kopi") ||
     descLower.includes("resto") ||
     descLower.includes("cafe") ||
@@ -159,14 +179,13 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
   } else if (type === "income") {
     if (descLower.includes("gaji") || descLower.includes("salary") || descLower.includes("payroll")) {
       category = "Gaji";
-    } else if (descLower.includes("dividen") || descLower.includes("reksadana") || descLower.includes("profit")) {
+    } else if (descLower.includes("dividen") || descLower.includes("reksadana") || descLower.includes("profit") || descLower.includes("bunga")) {
       category = "Investasi";
     } else {
       category = "Pendapatan Lain";
     }
   }
 
-  // 5. Tanggal Transaksi (Default hari ini YYYY-MM-DD)
   const now = new Date();
   const date = now.toISOString().split("T")[0];
 
