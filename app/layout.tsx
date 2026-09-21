@@ -6,6 +6,7 @@ import MobileTabBar from "@/components/layout/MobileTabBar";
 import Navbar from "@/components/layout/Navbar";
 import PageTransition from "@/components/layout/PageTransition";
 import SplashScreen from "@/components/layout/SplashScreen";
+import SyncInboxListener from "@/components/transactions/SyncInboxListener";
 import { QuickAddProvider } from "@/components/ui/QuickAddProvider";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
@@ -74,6 +75,7 @@ export default function RootLayout({
         <ThemeProvider>
           <ToastProvider>
             <QuickAddProvider>
+              <SyncInboxListener />
               <SplashScreen />
               <Navbar />
               <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 lg:py-8">

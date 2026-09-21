@@ -10,6 +10,7 @@ import LoadingState from "@/components/ui/LoadingState";
 import Modal from "@/components/ui/Modal";
 import StorageAlert from "@/components/ui/StorageAlert";
 import { useToast } from "@/components/ui/ToastProvider";
+import IosShortcutGuide from "@/components/settings/IosShortcutGuide";
 import { useTransactions, type ImportMode } from "@/hooks/useTransactions";
 import { todayISO } from "@/lib/date";
 import {
@@ -101,6 +102,8 @@ export default function SettingsView() {
         <LoadingState cards={2} />
       ) : (
         <div className="space-y-6">
+          <IosShortcutGuide />
+
           <Card>
             <CardHeader
               title="Cadangan & Pemulihan"
