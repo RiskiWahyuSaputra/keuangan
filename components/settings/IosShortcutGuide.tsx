@@ -114,24 +114,47 @@ export default function IosShortcutGuide() {
         </div>
 
         {/* 3 Langkah Pengaturan di iPhone */}
-        <div className="space-y-3 pt-2">
+        <div className="space-y-4 pt-2">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            3 Langkah Setup di iPhone (Hanya Sekali):
+            Cara Setup di iPhone (Pilih Salah Satu):
           </h4>
-          <ol className="space-y-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 list-decimal pl-4">
-            <li>
-              Buka aplikasi <strong>Shortcuts (Pintasan)</strong> di iPhone ➔ Pilih tab <strong>Automasi (Automation)</strong> ➔ Ketuk <strong>Automasi Baru</strong>.
-            </li>
-            <li>
-              Pilih pemicu <strong>Pesan (Message)</strong> ➔ Isi pengirim dengan nama/nomor Bank Anda (misal: <em>BCA</em>, <em>Mandiri</em>, atau kata kunci <em>"QRIS"</em>) ➔ Pilih <strong>Jalankan Segera</strong> (Run Immediately).
-            </li>
-            <li>
-              Tambahkan tindakan <strong>Dapatkan Konten URL (Get Contents of URL)</strong> ➔ Masukkan Webhook URL di atas dengan metode <strong>POST</strong> dan Request Body JSON:
-              <pre className="mt-1.5 p-2.5 rounded-xl bg-slate-900 text-slate-200 text-[11px] overflow-x-auto font-mono">
-                {`{ "text": "ShortcutInput" }`}
-              </pre>
-            </li>
-          </ol>
+
+          {/* Opsi A: Ketuk Punggung iPhone (Back Tap) */}
+          <div className="rounded-2xl border border-indigo-200/80 dark:border-indigo-800/40 bg-indigo-50/40 dark:bg-indigo-950/20 p-4 space-y-2.5">
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-xs sm:text-sm">
+              <Sparkles className="h-4 w-4" />
+              <span>Metode 1: Ketuk Punggung iPhone 2x (Paling Cepat untuk DANA / SeaBank)</span>
+            </div>
+            <ol className="space-y-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 list-decimal pl-4 leading-relaxed">
+              <li>
+                Buka aplikasi <strong>Shortcuts (Pintasan)</strong> ➔ tab <strong>Pintasan</strong> ➔ buat pintasan baru dengan nama <strong>"Catat DompetQ"</strong>.
+              </li>
+              <li>
+                Tambahkan tindakan 1: <strong>Minta Input (Ask for Input)</strong> ➔ tipe teks dengan pertanyaan <em>"Nominal & Keperluan?"</em>
+              </li>
+              <li>
+                Tambahkan tindakan 2: <strong>Dapatkan Konten URL (Get Contents of URL)</strong> ➔ Masukkan Webhook URL di atas, Metode: <strong>POST</strong>, Request Body: JSON <code>{`{ "text": Disediakan Input }`}</code>.
+              </li>
+              <li>
+                Masuk ke <strong>Pengaturan iPhone ➔ Aksesibilitas ➔ Sentuh ➔ Ketuk Bagian Belakang (Back Tap)</strong> ➔ pilih Ketuk 2x ➔ pilih pintasan <strong>"Catat DompetQ"</strong>.
+              </li>
+              <li className="text-emerald-600 dark:text-emerald-400 font-medium">
+                Selesai! Sekarang setelah bayar di DANA/SeaBank, tinggal ketuk punggung iPhone 2x, lalu ketik singkat: misal <code>150rb seabank</code> atau <code>35k kopi</code>. Langsung otomatis tercatat!
+              </li>
+            </ol>
+          </div>
+
+          {/* Opsi B: Otomasi SMS */}
+          <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/60 p-4 space-y-2">
+            <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100">
+              Metode 2: Otomasi SMS Notifikasi Bank (BCA / Mandiri / BRI)
+            </h5>
+            <ol className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 list-decimal pl-4 leading-relaxed">
+              <li>Di Shortcuts ➔ tab <strong>Automasi</strong> ➔ buat <strong>Automasi Pribadi</strong> ➔ pilih <strong>Pesan (Message)</strong>.</li>
+              <li>Isi pengirim Bank ➔ centang <strong>Jalankan Segera (Run Immediately)</strong>.</li>
+              <li>Tambahkan <strong>Dapatkan Konten URL</strong> ke Webhook URL DompetQ dengan metode POST.</li>
+            </ol>
+          </div>
         </div>
 
         {/* Simulator / Uji Coba Cepat */}

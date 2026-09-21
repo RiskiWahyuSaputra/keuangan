@@ -7,8 +7,8 @@ export interface ParsedBankTransaction {
 }
 
 /**
- * Otomatis mendeteksi teks notifikasi transaksi Bank & E-Wallet di Indonesia:
- * DANA, SeaBank, BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, QRIS, dsb.
+ * Otomatis mendeteksi teks notifikasi transaksi Bank, E-Wallet,
+ * maupun input cepat kalimat natural (misal: "150rb seabank", "makan 35k", "gaji 5jt")
  */
 export function parseBankText(rawText: string): ParsedBankTransaction {
   const text = rawText.replace(/[\r\n]+/g, " ").trim();
@@ -29,31 +29,55 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
     lower.includes("diterima dari") ||
     lower.includes("top up berhasil") ||
     lower.includes("pengembalian dana") ||
-    lower.includes("cashback")
+    lower.includes("cashback") ||
+    lower.startsWith("gaji") ||
+    lower.startsWith("masuk") ||
+    lower.startsWith("pemasukan") ||
+    lower.includes("dapat uang") ||
+    lower.includes("terima ")
   ) {
     type = "income";
   }
 
-  // 2. Ekstraksi Nominal Uang (Rp XX.XXX atau IDR XX.XXX atau angka)
+  // 2. Ekstraksi Nominal Uang
   let amount = 0;
-  const rpRegex = /(?:rp\.?|idr)\s*([\d.,]+)/i;
-  const rpMatch = text.match(rpRegex);
 
-  if (rpMatch && rpMatch[1]) {
-    let cleanNum = rpMatch[1].trim();
-    if (cleanNum.includes(".") && cleanNum.includes(",")) {
-      cleanNum = cleanNum.replace(/\./g, "").replace(",", ".");
-    } else if (cleanNum.includes(".")) {
-      cleanNum = cleanNum.replace(/\./g, "");
-    } else if (cleanNum.includes(",")) {
-      cleanNum = cleanNum.replace(/,/g, "");
-    }
-    const val = parseFloat(cleanNum);
-    if (!isNaN(val) && val > 0) {
-      amount = val;
+  // Pola shorthand: "150rb", "150k", "50 ribu", "2.5jt", "5jt", "10juta"
+  const shorthandRegex = /(\d+(?:[.,]\d+)?)\s*(rb|k|ribu|jt|juta)\b/i;
+  const shortMatch = lower.match(shorthandRegex);
+
+  if (shortMatch && shortMatch[1]) {
+    const rawVal = parseFloat(shortMatch[1].replace(",", "."));
+    const unit = shortMatch[2].toLowerCase();
+    if (unit === "rb" || unit === "k" || unit === "ribu") {
+      amount = Math.round(rawVal * 1000);
+    } else if (unit === "jt" || unit === "juta") {
+      amount = Math.round(rawVal * 1000000);
     }
   }
 
+  // Pola format resmi Bank: Rp 50.000 / IDR 50.000 / Rp50000
+  if (amount === 0) {
+    const rpRegex = /(?:rp\.?|idr)\s*([\d.,]+)/i;
+    const rpMatch = text.match(rpRegex);
+
+    if (rpMatch && rpMatch[1]) {
+      let cleanNum = rpMatch[1].trim();
+      if (cleanNum.includes(".") && cleanNum.includes(",")) {
+        cleanNum = cleanNum.replace(/\./g, "").replace(",", ".");
+      } else if (cleanNum.includes(".")) {
+        cleanNum = cleanNum.replace(/\./g, "");
+      } else if (cleanNum.includes(",")) {
+        cleanNum = cleanNum.replace(/,/g, "");
+      }
+      const val = parseFloat(cleanNum);
+      if (!isNaN(val) && val > 0) {
+        amount = val;
+      }
+    }
+  }
+
+  // Fallback: kata "sebesar 50000" atau angka tunggal di awal/akhir kalimat
   if (amount === 0) {
     const fallbackRegex = /(?:sebesar|nominal|jumlah)\s*[:=]?\s*([\d.,]+)/i;
     const fbMatch = text.match(fallbackRegex);
@@ -64,50 +88,57 @@ export function parseBankText(rawText: string): ParsedBankTransaction {
     }
   }
 
-  // 3. Ekstraksi Nama Toko / Penerima / Bank (misal SeaBank, DANA, BCA, dsb)
+  // Fallback angka mentah (misal: "150000 seabank" atau "seabank 150000")
+  if (amount === 0) {
+    const rawNumberMatch = text.match(/\b(\d{4,12})\b/);
+    if (rawNumberMatch && rawNumberMatch[1]) {
+      const val = parseInt(rawNumberMatch[1], 10);
+      if (!isNaN(val) && val > 0) amount = val;
+    }
+  }
+
+  // 3. Ekstraksi Deskripsi / Nama Penerima / Toko
   let description = "Transaksi Otomatis";
 
-  // Pola spesifik transfer bank / e-wallet
-  // Contoh DANA: "Kirim Uang Rp 100.000 ke SEABANK - RISKI WAHYU SAPUTRA berhasil"
-  // Contoh DANA: "Kamu berhasil kirim uang ke SEABANK"
-  // Contoh SeaBank: "Transfer ke RISKI WAHYU (SeaBank) berhasil"
+  // Jika format notifikasi transfer resmi
   const transferMatch =
     text.match(/(?:kirim uang ke|transfer ke|bayar ke|kirim ke)\s+([A-Za-z0-9\s&'.-]{3,35}?)(?:\s+(?:berhasil|sukses|pada|sebesar|\.|\,|-|$))/i) ||
     text.match(/(?:ke|penerima|merchant|di|toko)\s+([A-Za-z0-9\s&'.-]{3,35}?)(?:\s+(?:berhasil|sukses|pada|tanggal|\.|\,|$))/i);
 
   if (transferMatch && transferMatch[1]) {
     description = transferMatch[1].trim();
-  } else if (lower.includes("seabank")) {
-    description = type === "income" ? "Transfer dari SeaBank" : "Transfer ke SeaBank";
-  } else if (lower.includes("dana")) {
-    description = type === "income" ? "Terima Uang DANA" : "Transfer DANA";
-  } else if (lower.includes("qris")) {
-    description = "Pembayaran QRIS";
-  } else if (lower.includes("gopay") || lower.includes("gojek")) {
-    description = "Transaksi GoPay";
-  } else if (lower.includes("shopee")) {
-    description = "Transaksi Shopee";
-  } else if (lower.includes("transfer")) {
-    description = type === "income" ? "Transfer Masuk" : "Transfer Keluar";
+  } else {
+    // Jika format input cepat Back Tap (contoh: "150rb seabank", "35k kopi kenangan", "makan bakso 25rb")
+    // Bersihkan angka dan satuan nominal dari teks untuk menyisakan nama deskripsi
+    let cleanDesc = text
+      .replace(shorthandRegex, "")
+      .replace(/(?:rp\.?|idr)\s*[\d.,]+/gi, "")
+      .replace(/\b\d{4,12}\b/g, "")
+      .replace(/^(kirim ke|transfer ke|bayar|beli|ke)\s+/i, "")
+      .trim();
+
+    if (cleanDesc.length >= 2) {
+      // Huruf kapital awal tiap kata
+      description = cleanDesc
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    } else if (lower.includes("seabank")) {
+      description = type === "income" ? "Transfer dari SeaBank" : "Transfer ke SeaBank";
+    } else if (lower.includes("dana")) {
+      description = type === "income" ? "Terima Uang DANA" : "Transfer DANA";
+    } else if (lower.includes("qris")) {
+      description = "Pembayaran QRIS";
+    }
   }
 
-  // Bersihkan kata penghubung sisa
   description = description.replace(/\s+-\s+$/, "").trim();
 
   // 4. Kategori Otomatis berdasarkan Kata Kunci
   let category = "Lainnya";
   const descLower = `${description} ${text}`.toLowerCase();
 
-  // Jika transfer antar bank sendiri / e-wallet (DANA ke SeaBank)
   if (
-    (descLower.includes("dana") && descLower.includes("seabank")) ||
-    descLower.includes("kirim uang") ||
-    descLower.includes("transfer ke rekening") ||
-    descLower.includes("tarik saldo") ||
-    descLower.includes("pindah dana")
-  ) {
-    category = "Lainnya"; // Atau kategori Transfer
-  } else if (
     descLower.includes("kopi") ||
     descLower.includes("resto") ||
     descLower.includes("cafe") ||
