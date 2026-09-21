@@ -1,33 +1,56 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { type NextRequest, NextResponse } from "next/server";
 import { parseBankText } from "@/lib/bankParser";
 import type { Transaction } from "@/types/transaction";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "inbox.json");
+// In-memory buffer sebagai penyimpanan utama agar instan dan aman di serverless (Vercel/Netlify /var/task)
+let memoryInbox: Transaction[] = [];
+
+// Di serverless environment seperti Vercel, direktori runtime adalah read-only (/var/task).
+// Gunakan os.tmpdir() (/tmp) yang writable di semua environment Linux/Vercel/Docker/Lokal.
+const TMP_DATA_DIR = path.join(os.tmpdir(), "dompetq-data");
+const TMP_DATA_FILE = path.join(TMP_DATA_DIR, "inbox.json");
 
 function ensureInboxFile(): Transaction[] {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), "utf8");
-    return [];
-  }
   try {
-    const raw = fs.readFileSync(DATA_FILE, "utf8");
-    return JSON.parse(raw);
+    if (!fs.existsSync(TMP_DATA_DIR)) {
+      fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(TMP_DATA_FILE)) {
+      fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(memoryInbox, null, 2), "utf8");
+      return memoryInbox;
+    }
+    const raw = fs.readFileSync(TMP_DATA_FILE, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      // Gabungkan dengan in-memory buffer untuk mencegah kehilangan data
+      const idSet = new Set(parsed.map((item: Transaction) => item.id));
+      for (const m of memoryInbox) {
+        if (!idSet.has(m.id)) {
+          parsed.unshift(m);
+        }
+      }
+      memoryInbox = parsed;
+      return memoryInbox;
+    }
+    return memoryInbox;
   } catch {
-    return [];
+    return memoryInbox;
   }
 }
 
 function writeInboxFile(items: Transaction[]): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  memoryInbox = items;
+  try {
+    if (!fs.existsSync(TMP_DATA_DIR)) {
+      fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(TMP_DATA_FILE, JSON.stringify(items, null, 2), "utf8");
+  } catch {
+    // Jika disk /tmp gagal, tetap selamat di memoryInbox
   }
-  fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2), "utf8");
 }
 
 // GET: Ambil transaksi masuk dari Apple Shortcuts / Otomasi
@@ -45,9 +68,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Skenario 1: Teks SMS atau Teks Notifikasi mentah (misal dikirim oleh Apple Shortcuts)
-    // body: { text: "m-BCA: Pembayaran QRIS Rp 45.000 ke KOPI KENANGAN BERHASIL. 19/09 14:20" }
-    // atau body: { raw: "..." }
     let parsedData = {
       type: (body.type === "income" ? "income" : "expense") as "income" | "expense",
       amount: Number(body.amount) || 0,
