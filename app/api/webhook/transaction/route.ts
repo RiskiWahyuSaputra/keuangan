@@ -53,14 +53,28 @@ function writeInboxFile(items: Transaction[]): void {
   }
 }
 
+// Menambahkan header CORS agar request dari iOS Shortcuts / browser tidak diblokir
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 // GET: Ambil transaksi masuk dari Apple Shortcuts / Otomasi
 export async function GET() {
   const items = ensureInboxFile();
-  return NextResponse.json({
-    ok: true,
-    total: items.length,
-    items,
-  });
+  return NextResponse.json(
+    {
+      ok: true,
+      total: items.length,
+      items,
+    },
+    { headers: corsHeaders },
+  );
 }
 
 // POST: Endpoint untuk menerima Webhook dari Apple Shortcuts / SMS Otomasi
@@ -114,18 +128,21 @@ export async function POST(req: NextRequest) {
     const updated = [newTransaction, ...currentItems];
     writeInboxFile(updated);
 
-    return NextResponse.json({
-      ok: true,
-      message: "Transaksi berhasil diterima dari iOS Automation!",
-      transaction: newTransaction,
-    });
+    return NextResponse.json(
+      {
+        ok: true,
+        message: "Transaksi berhasil diterima dari iOS Automation!",
+        transaction: newTransaction,
+      },
+      { headers: corsHeaders },
+    );
   } catch (error) {
     return NextResponse.json(
       {
         ok: false,
         error: error instanceof Error ? error.message : "Terjadi kesalahan server.",
       },
-      { status: 500 },
+      { status: 500, headers: corsHeaders },
     );
   }
 }
